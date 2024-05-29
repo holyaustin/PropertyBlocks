@@ -1,61 +1,138 @@
-const { expect } = require("chai");
-const { ethers } = require("hardhat");
+import { expect } from "chai";
+import { ethers } from "hardhat";
 
 describe("RealEstateFractionalize", function () {
-  let RealEstateFractionalize;
-  let realEstate;
-  let owner, user1, user2, buyer, renter;
-  const initialSupply = ethers.utils.parseUnits('1000', 'ether');
+  let RealEstateFractionalize, realEstateFractionalize;
+  let owner, addr1, addr2, addr3;
+  const listingPrice = ethers.utils.parseEther("1");
 
   beforeEach(async function () {
-    [owner, user1, user2, buyer, renter] = await ethers.getSigners();
-
     RealEstateFractionalize = await ethers.getContractFactory("RealEstateFractionalize");
-    realEstate = await RealEstateFractionalize.deploy("RealEstateToken", "RET", initialSupply);
-    await realEstate.deployed();
+    [owner, addr1, addr2, addr3, ...addrs] = await ethers.getSigners();
+    realEstateFractionalize = await RealEstateFractionalize.deploy(
+      "Real Estate Token",
+      "RET",
+      ethers.utils.parseEther("1000000"),
+    );
+    await realEstateFractionalize.deployed();
   });
 
-  it("should allow the owner to register properties", async function () {
-    await realEstate.connect(owner).registerProperty(ethers.utils.parseUnits('100', 'ether'));
-
-    const property = await realEstate.properties(0);
-    expect(property.value.toString()).to.equal(ethers.utils.parseUnits('100', 'ether').toString());
-    expect(property.owner).to.equal(owner.address);
-  });
-
-  it("should allow users to buy fractions of a property", async function () {
-    await realEstate.connect(owner).registerProperty(ethers.utils.parseUnits('100', 'ether'));
-    await realEstate.connect(owner).listPropertyForSale(0, ethers.utils.parseUnits('100', 'ether'));
-
-    await realEstate.connect(buyer).buyFraction(0, ethers.utils.parseUnits('50', 'ether'), {
-      value: ethers.utils.parseUnits('50', 'ether')
+  describe("Deployment", function () {
+    it("Should set the right owner", async function () {
+      expect(await realEstateFractionalize.owner()).to.equal(owner.address);
     });
 
-    const buyerFraction = await realEstate.propertyFractions(0, buyer.address);
-    expect(buyerFraction.toString()).to.equal(ethers.utils.parseUnits('50', 'ether').toString());
+    it("Should have correct initial supply", async function () {
+      const ownerBalance = await realEstateFractionalize.balanceOf(owner.address);
+      expect(await realEstateFractionalize.totalSupply()).to.equal(ownerBalance);
+    });
   });
 
-  it("should allow users to rent properties", async function () {
-    await realEstate.connect(owner).registerProperty(ethers.utils.parseUnits('100', 'ether'));
-    await realEstate.connect(owner).listPropertyForRent(0, ethers.utils.parseUnits('10', 'ether'));
-
-    await realEstate.connect(renter).rentProperty(0, { value: ethers.utils.parseUnits('10', 'ether') });
-
-    const property = await realEstate.properties(0);
-    expect(property.forRent).to.equal(false);
+  describe("Listing Price", function () {
+    it("Should allow owner to set listing price", async function () {
+      await realEstateFractionalize.setListingPrice(listingPrice);
+      expect(await realEstateFractionalize.getListingPrice()).to.equal(listingPrice);
+    });
   });
 
-  it("should allow users to sell fractions of a property", async function () {
-    await realEstate.connect(owner).registerProperty(ethers.utils.parseUnits('100', 'ether'));
-    await realEstate.connect(owner).listPropertyForSale(0, ethers.utils.parseUnits('100', 'ether'));
-
-    await realEstate.connect(buyer).buyFraction(0, ethers.utils.parseUnits('50', 'ether'), {
-      value: ethers.utils.parseUnits('50', 'ether')
+  describe("Register Property", function () {
+    beforeEach(async function () {
+      await realEstateFractionalize.setListingPrice(listingPrice);
     });
 
-    await realEstate.connect(buyer).sellFraction(0, ethers.utils.parseUnits('50', 'ether'), user1.address);
+    it("Should register a property and transfer listing price", async function () {
+      await expect(
+        realEstateFractionalize.registerProperty(ethers.utils.parseEther("100"), 100, "https://property.uri", {
+          value: listingPrice,
+        }),
+      ).to.changeEtherBalances([owner, realEstateFractionalize], [-listingPrice, listingPrice]);
 
-    const user1Fraction = await realEstate.propertyFractions(0, user1.address);
-    expect(user1Fraction.toString()).to.equal(ethers.utils.parseUnits('50', 'ether').toString());
+      const property = await realEstateFractionalize.properties(0);
+      expect(property.owner).to.equal(owner.address);
+      expect(property.value).to.equal(ethers.utils.parseEther("100"));
+      expect(property.totalFractions).to.equal(100);
+      expect(property.propertyURI).to.equal("https://property.uri");
+    });
+  });
+
+  describe("Buy Fraction", function () {
+    beforeEach(async function () {
+      await realEstateFractionalize.setListingPrice(listingPrice);
+      await realEstateFractionalize.registerProperty(ethers.utils.parseEther("100"), 100, "https://property.uri", {
+        value: listingPrice,
+      });
+      await realEstateFractionalize.listPropertyForSale(0, ethers.utils.parseEther("100"));
+    });
+
+    it("Should allow user to buy fractions and transfer fees", async function () {
+      const cost = ethers.utils.parseEther("10");
+      const fee = cost.mul(5).div(1000);
+      const netAmount = cost.sub(fee);
+
+      await expect(realEstateFractionalize.connect(addr1).buyFraction(0, 10, { value: cost })).to.changeEtherBalances(
+        [addr1, owner, realEstateFractionalize],
+        [-cost, netAmount, fee],
+      );
+
+      const fractions = await realEstateFractionalize.propertyFractions(0, addr1.address);
+      expect(fractions).to.equal(10);
+    });
+  });
+
+  describe("Sell Fraction", function () {
+    beforeEach(async function () {
+      await realEstateFractionalize.setListingPrice(listingPrice);
+      await realEstateFractionalize.registerProperty(ethers.utils.parseEther("100"), 100, "https://property.uri", {
+        value: listingPrice,
+      });
+      await realEstateFractionalize.listPropertyForSale(0, ethers.utils.parseEther("100"));
+      await realEstateFractionalize.connect(addr1).buyFraction(0, 10, { value: ethers.utils.parseEther("10") });
+    });
+
+    it("Should allow user to sell fractions and transfer fees", async function () {
+      const fractionPrice = ethers.utils.parseEther("1");
+      const cost = fractionPrice.mul(5);
+      const fee = cost.mul(5).div(1000);
+      const netAmount = cost.sub(fee);
+
+      await expect(
+        realEstateFractionalize.connect(addr1).sellFraction(0, 5, addr2.address, fractionPrice),
+      ).to.changeEtherBalances([addr1, realEstateFractionalize], [netAmount, fee]);
+
+      const fractions = await realEstateFractionalize.propertyFractions(0, addr2.address);
+      expect(fractions).to.equal(5);
+    });
+  });
+
+  describe("Rent Property", function () {
+    beforeEach(async function () {
+      await realEstateFractionalize.setListingPrice(listingPrice);
+      await realEstateFractionalize.registerProperty(ethers.utils.parseEther("100"), 100, "https://property.uri", {
+        value: listingPrice,
+      });
+      await realEstateFractionalize.listPropertyForSale(0, ethers.utils.parseEther("100"));
+      await realEstateFractionalize.connect(addr1).buyFraction(0, 10, { value: ethers.utils.parseEther("10") });
+      await realEstateFractionalize.connect(addr2).buyFraction(0, 10, { value: ethers.utils.parseEther("10") });
+
+      await realEstateFractionalize.connect(owner).listPropertyForRent(0, ethers.utils.parseEther("1"));
+    });
+
+    it("Should allow user to rent a property and transfer fees", async function () {
+      const rentDays = 5;
+      const rentCost = ethers.utils.parseEther("5");
+      const fee = rentCost.mul(5).div(1000);
+      const netRentCost = rentCost.sub(fee);
+
+      await expect(
+        realEstateFractionalize.connect(addr3).rentProperty(0, rentDays, { value: rentCost }),
+      ).to.changeEtherBalances([addr3, realEstateFractionalize], [-rentCost, fee]);
+
+      const rentPerFraction = netRentCost.div(20); // 20 fractions sold
+
+      await expect(() => realEstateFractionalize.connect(owner).claimRent(0)).to.changeEtherBalances(
+        [owner, addr1, addr2],
+        [rentPerFraction.mul(80), rentPerFraction.mul(10), rentPerFraction.mul(10)],
+      );
+    });
   });
 });
