@@ -36,3 +36,7 @@ Fractional Sale:
 
 If the property is being fractionally sold, and the owner decides to sell 10% of the property, the salePrice for that fraction could be 15 ether (10% of 150 ether).
 By having both value and salePrice, the smart contract can differentiate between the inherent worth of the property and the price at which the owner is willing to sell it, providing flexibility in transactions and pricing.
+
+https://sepolia-blockscout.lisk.com/address/0x09c67f656805d3B4CB544ce11683928e62a9c4d7
+
+https://testnet.bscscan.com/address/0xa199AB87E3787C67f5286d78f527B1426f022eeD
