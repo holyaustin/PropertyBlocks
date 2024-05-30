@@ -52,10 +52,9 @@ contract RealEstateFractionalize is ERC20 {
      * @param propertyURI The URI of the property metadata.
      */
     function registerProperty(uint256 value, uint256 totalFractions, string memory propertyURI) external payable {
-        console.log("ETH Balance B4 require ", address(this).balance);
         require(totalFractions > 0, "Total fractions must be greater than zero");
         require(msg.value == listingPrice, "Incorrect listing price");
-       console.log("ETH Balance at require ", address(this).balance);
+       
         properties[nextPropertyId] = Property({
             id: nextPropertyId,
             owner: payable(msg.sender),
@@ -76,7 +75,6 @@ contract RealEstateFractionalize is ERC20 {
 
         emit PropertyRegistered(nextPropertyId, msg.sender, value, totalFractions, propertyURI);
         nextPropertyId++;
-        console.log("ETH Balance at rEND ", address(this).balance);
     }
 
 
@@ -98,7 +96,7 @@ contract RealEstateFractionalize is ERC20 {
    
         uint256 netAmount = (cost * 995) / 1000; 
         uint256 fee = cost - netAmount;  // 0.5% fee
-        console.log("The netamount is ", fee); 
+        console.log("The fee is ", fee); 
         payable(property.owner).transfer(netAmount); 
          
         if (propertyFractions[propertyId][msg.sender] == 0) {
@@ -126,25 +124,29 @@ contract RealEstateFractionalize is ERC20 {
      * @param to The address to transfer the fractions to.
      * @param fractionPrice The price per fraction.
      */
-    function sellFraction(uint256 propertyId, uint256 fractionAmount, address to, uint256 fractionPrice) external {
+    function sellFraction(uint256 propertyId, uint256 fractionAmount, address to, uint256 fractionPrice) external payable {
         console.log("ETH Balance Before ", address(this).balance);
-        require(propertyFractions[propertyId][msg.sender] >= fractionAmount, "Not enough fractions");
-
-        uint256 cost = fractionPrice * fractionAmount;
+        Property storage property = properties[propertyId];
         require(to != address(0), "Invalid address");
+        require(msg.sender != property.owner, "You are the Property owner");
+        require(propertyFractions[propertyId][msg.sender] >= fractionAmount, "Not enough fractions");
+        uint256 cost = fractionPrice * fractionAmount;
+        console.log("The cost is ", cost); 
+        require(msg.value == cost, "Incorrect value");
+
+        uint256 netRentCost  = (msg.value * 995) / 1000; 
+        uint256 fee = cost - netRentCost;  // 0.5% fee
+        console.log("The fee is ", fee); 
+        payable(msg.sender).transfer(netRentCost);
 
         _burn(msg.sender, fractionAmount);
         _mint(to, fractionAmount);
-
-        uint256 fee = (cost * 5) / 1000; // 0.5% fee
-        uint256 netAmount = cost - fee;
-        payable(msg.sender).transfer(netAmount);
-        payable(address(this)).transfer(fee);
-
+         
         propertyFractions[propertyId][msg.sender] -= fractionAmount;
         propertyFractions[propertyId][to] += fractionAmount;
 
         emit FractionSold(propertyId, msg.sender, fractionAmount, to);
+        console.log("ETH Balance last ", address(this).balance);
     }
 
     /**
@@ -154,19 +156,26 @@ contract RealEstateFractionalize is ERC20 {
      * @param rentDays The number of days to rent the property.
      */
     function rentProperty(uint256 propertyId, uint256 rentDays) external payable {
+        console.log("ETH Balance Before ", address(this).balance);
+
         Property storage property = properties[propertyId];
         require(property.forRent, "Property not for rent");
+        console.log("property.rentedUntil is", property.rentedUntil);
+        console.log("block.timestamp is ", block.timestamp);
+        require(property.rentedUntil <= block.timestamp, "Property already rented");
         uint256 rentCost = property.rentPrice * rentDays;
         require(msg.value == rentCost, "Incorrect value");
-
-        uint256 fee = (msg.value * 5) / 1000; // 0.5% fee
-        uint256 netRentCost = msg.value - fee;
-        payable(address(this)).transfer(fee);
+        
+        uint256 netRentCost  = (msg.value * 995) / 1000; 
+        uint256 fee = msg.value - netRentCost;  // 0.5% fee
+        console.log("The netRentCost is ", netRentCost); 
+        console.log("The fee is ", fee); 
 
         property.rentedUntil = block.timestamp + (rentDays * 1 days);
         property.rentedDays += rentDays;
 
         uint256 rentPerFraction = netRentCost / property.totalFractions;
+        console.log("The rentPerFraction is ", rentPerFraction); 
         for (uint256 i = 0; i < fractionOwners[propertyId].length; i++) {
             address owner = fractionOwners[propertyId][i];
             uint256 ownerFractions = propertyFractions[propertyId][owner];
@@ -174,6 +183,7 @@ contract RealEstateFractionalize is ERC20 {
         }
 
         emit PropertyRented(propertyId, msg.sender, property.rentPrice, rentDays);
+        console.log("ETH Balance END ", address(this).balance);
     }
 
 
