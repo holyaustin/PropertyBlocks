@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-// import "@openzeppelin/contracts/access/Ownable.sol";
+import "hardhat/console.sol";
 
 contract RealEstateFractionalize is ERC20 {
     struct Property {
@@ -31,11 +31,13 @@ contract RealEstateFractionalize is ERC20 {
     event FractionBought(uint256 propertyId, address buyer, uint256 fractionAmount);
     event PropertyRented(uint256 id, address renter, uint256 rentPrice, uint256 rentedDays);
     event FractionSold(uint256 propertyId, address seller, uint256 fractionAmount, address buyer);
+    event Received(address, uint);
 
     constructor() ERC20("Property Block Token", "PBT") { 
         downer = msg.sender;
+        _mint(0x5B38Da6a701c568545dCfcB03FcB875f56beddC4, 100  * 10 ** 18);
     }
-
+ 
     // Modifier to check that the caller is the owner of the contract.
     modifier onlyOwner() {
         require(msg.sender == downer, "Not owner");
@@ -50,9 +52,10 @@ contract RealEstateFractionalize is ERC20 {
      * @param propertyURI The URI of the property metadata.
      */
     function registerProperty(uint256 value, uint256 totalFractions, string memory propertyURI) external payable {
+        console.log("ETH Balance B4 require ", address(this).balance);
         require(totalFractions > 0, "Total fractions must be greater than zero");
-        // require(msg.value == listingPrice, "Incorrect listing price");
-
+        require(msg.value == listingPrice, "Incorrect listing price");
+       console.log("ETH Balance at require ", address(this).balance);
         properties[nextPropertyId] = Property({
             id: nextPropertyId,
             owner: payable(msg.sender),
@@ -73,7 +76,106 @@ contract RealEstateFractionalize is ERC20 {
 
         emit PropertyRegistered(nextPropertyId, msg.sender, value, totalFractions, propertyURI);
         nextPropertyId++;
+        console.log("ETH Balance at rEND ", address(this).balance);
     }
+
+
+    /**
+     * @dev Allows a user to buy fractions of a property.
+     * Transfers 0.5% of the cost to the contract and the rest to the property owner.
+     * @param propertyId The ID of the property to buy fractions from.
+     * @param fractionAmount The number of fractions to buy.
+     */
+    function buyFraction(uint256 propertyId, uint256 fractionAmount) external payable {
+
+        Property storage property = properties[propertyId];
+        require(property.forSale, "Property not for sale");
+        uint256 cost = (property.salePrice * fractionAmount) / property.totalFractions;
+        console.log("The cost is ", cost);
+        require(msg.sender != property.owner, "You are the Property owner");
+        require(msg.value == cost, "Incorrect value");
+       _mint(msg.sender, fractionAmount);
+   
+        uint256 netAmount = (cost * 995) / 1000; 
+        uint256 fee = cost - netAmount;  // 0.5% fee
+        console.log("The netamount is ", fee); 
+        payable(property.owner).transfer(netAmount); 
+         
+        if (propertyFractions[propertyId][msg.sender] == 0) {
+            fractionOwners[propertyId].push(msg.sender);
+            console.log("Inside if ", propertyFractions[propertyId][msg.sender]);
+        }
+
+        propertyFractions[propertyId][msg.sender] += fractionAmount;
+        console.log("propertyFractions[propertyId][msg.sender] ", propertyFractions[propertyId][msg.sender]);
+        propertyFractions[propertyId][property.owner] -= fractionAmount;
+        console.log("propertyFractions[propertyId][property.owner] ", propertyFractions[propertyId][property.owner]);
+        property.fractionsSold += fractionAmount;
+        console.log("property.fractionsSold ", property.fractionsSold);
+
+        emit FractionBought(propertyId, msg.sender, fractionAmount);
+
+    }
+
+
+    /**
+     * @dev Allows a user to sell fractions of a property.
+     * Transfers 0.5% of the cost to the contract and the rest to the msg.sender.
+     * @param propertyId The ID of the property to sell fractions from.
+     * @param fractionAmount The number of fractions to sell.
+     * @param to The address to transfer the fractions to.
+     * @param fractionPrice The price per fraction.
+     */
+    function sellFraction(uint256 propertyId, uint256 fractionAmount, address to, uint256 fractionPrice) external {
+        console.log("ETH Balance Before ", address(this).balance);
+        require(propertyFractions[propertyId][msg.sender] >= fractionAmount, "Not enough fractions");
+
+        uint256 cost = fractionPrice * fractionAmount;
+        require(to != address(0), "Invalid address");
+
+        _burn(msg.sender, fractionAmount);
+        _mint(to, fractionAmount);
+
+        uint256 fee = (cost * 5) / 1000; // 0.5% fee
+        uint256 netAmount = cost - fee;
+        payable(msg.sender).transfer(netAmount);
+        payable(address(this)).transfer(fee);
+
+        propertyFractions[propertyId][msg.sender] -= fractionAmount;
+        propertyFractions[propertyId][to] += fractionAmount;
+
+        emit FractionSold(propertyId, msg.sender, fractionAmount, to);
+    }
+
+    /**
+     * @dev Allows a user to rent a property.
+     * Transfers 0.5% of the msg.value to the contract before computing rent per fraction to be split among addresses.
+     * @param propertyId The ID of the property to rent.
+     * @param rentDays The number of days to rent the property.
+     */
+    function rentProperty(uint256 propertyId, uint256 rentDays) external payable {
+        Property storage property = properties[propertyId];
+        require(property.forRent, "Property not for rent");
+        uint256 rentCost = property.rentPrice * rentDays;
+        require(msg.value == rentCost, "Incorrect value");
+
+        uint256 fee = (msg.value * 5) / 1000; // 0.5% fee
+        uint256 netRentCost = msg.value - fee;
+        payable(address(this)).transfer(fee);
+
+        property.rentedUntil = block.timestamp + (rentDays * 1 days);
+        property.rentedDays += rentDays;
+
+        uint256 rentPerFraction = netRentCost / property.totalFractions;
+        for (uint256 i = 0; i < fractionOwners[propertyId].length; i++) {
+            address owner = fractionOwners[propertyId][i];
+            uint256 ownerFractions = propertyFractions[propertyId][owner];
+            payable(owner).transfer(rentPerFraction * ownerFractions);
+        }
+
+        emit PropertyRented(propertyId, msg.sender, property.rentPrice, rentDays);
+    }
+
 
     /**
      * @dev Sets the listing price for registering a property.
@@ -209,93 +311,6 @@ contract RealEstateFractionalize is ERC20 {
         return myProperties;
     }
 
-    /**
-     * @dev Allows a user to buy fractions of a property.
-     * Transfers 0.5% of the cost to the contract and the rest to the property owner.
-     * @param propertyId The ID of the property to buy fractions from.
-     * @param fractionAmount The number of fractions to buy.
-     */
-    function buyFraction(uint256 propertyId, uint256 fractionAmount) external payable {
-        Property storage property = properties[propertyId];
-        require(property.forSale, "Property not for sale");
-        uint256 cost = (property.salePrice * fractionAmount) / property.totalFractions;
-        require(msg.value >= cost, "Incorrect value");
-
-       _mint(msg.sender, fractionAmount);
-       _burn(property.owner, fractionAmount);
-
-        uint256 fee = (cost * 5) / 1000; // 0.5% fee
-        uint256 netAmount = cost - fee;
-        payable(property.owner).transfer(netAmount);
-        //payable(address(this)).transfer(fee);
-
-        if (propertyFractions[propertyId][msg.sender] == 0) {
-            fractionOwners[propertyId].push(msg.sender);
-        }
-
-        propertyFractions[propertyId][msg.sender] += fractionAmount;
-        propertyFractions[propertyId][property.owner] -= fractionAmount;
-        property.fractionsSold += fractionAmount;
-
-        emit FractionBought(propertyId, msg.sender, fractionAmount);
-    }
-
-    /**
-     * @dev Allows a user to sell fractions of a property.
-     * Transfers 0.5% of the cost to the contract and the rest to the msg.sender.
-     * @param propertyId The ID of the property to sell fractions from.
-     * @param fractionAmount The number of fractions to sell.
-     * @param to The address to transfer the fractions to.
-     * @param fractionPrice The price per fraction.
-     */
-    function sellFraction(uint256 propertyId, uint256 fractionAmount, address to, uint256 fractionPrice) external {
-        require(propertyFractions[propertyId][msg.sender] >= fractionAmount, "Not enough fractions");
-
-        uint256 cost = fractionPrice * fractionAmount;
-        require(to != address(0), "Invalid address");
-
-        _burn(msg.sender, fractionAmount);
-        _mint(to, fractionAmount);
-
-        uint256 fee = (cost * 5) / 1000; // 0.5% fee
-        uint256 netAmount = cost - fee;
-        payable(msg.sender).transfer(netAmount);
-        payable(address(this)).transfer(fee);
-
-        propertyFractions[propertyId][msg.sender] -= fractionAmount;
-        propertyFractions[propertyId][to] += fractionAmount;
-
-        emit FractionSold(propertyId, msg.sender, fractionAmount, to);
-    }
-
-    /**
-     * @dev Allows a user to rent a property.
-     * Transfers 0.5% of the msg.value to the contract before computing rent per fraction to be split among addresses.
-     * @param propertyId The ID of the property to rent.
-     * @param rentDays The number of days to rent the property.
-     */
-    function rentProperty(uint256 propertyId, uint256 rentDays) external payable {
-        Property storage property = properties[propertyId];
-        require(property.forRent, "Property not for rent");
-        uint256 rentCost = property.rentPrice * rentDays;
-        require(msg.value == rentCost, "Incorrect value");
-
-        uint256 fee = (msg.value * 5) / 1000; // 0.5% fee
-        uint256 netRentCost = msg.value - fee;
-        payable(address(this)).transfer(fee);
-
-        property.rentedUntil = block.timestamp + (rentDays * 1 days);
-        property.rentedDays += rentDays;
-
-        uint256 rentPerFraction = netRentCost / property.totalFractions;
-        for (uint256 i = 0; i < fractionOwners[propertyId].length; i++) {
-            address owner = fractionOwners[propertyId][i];
-            uint256 ownerFractions = propertyFractions[propertyId][owner];
-            payable(owner).transfer(rentPerFraction * ownerFractions);
-        }
-
-        emit PropertyRented(propertyId, msg.sender, property.rentPrice, rentDays);
-    }
 
         // Function to fetch fractions sold of a property
     function fetchFractionsSold(uint256 propertyId) external view returns (uint256) {
@@ -309,7 +324,16 @@ contract RealEstateFractionalize is ERC20 {
     }
 
     // Function to deposit funds to the contract
-    function deposit() external payable onlyOwner {}
+    function deposit() public payable onlyOwner {}
+
+    // Function to fetch the ETH balance in the contract
+    function fetchETHBalance() external onlyOwner view returns (uint256) {
+        return address(this).balance;
+    }
+
+    receive() external payable {
+        emit Received(msg.sender, msg.value);
+    }
 
     // Function to withdraw funds from the contract
     function withdraw(uint256 amount) external onlyOwner {
