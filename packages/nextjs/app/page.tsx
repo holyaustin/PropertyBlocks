@@ -111,7 +111,7 @@ const Home: NextPage = () => {
               priority={true}
               fill={true}
               alt="landing pic"
-              src="https://www.propertypro.ng/offers/wp-content/themes/reserville/images/0-main-slider/9.jpg"
+              src="https://lenderkit.com/wp-content/uploads/2022/11/fractional-ownership-1100x563.png"
             />
           </div>
 
