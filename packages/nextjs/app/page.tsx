@@ -3,34 +3,23 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { NextPage } from "next";
-//import { useAccount } from "wagmi";
 import { BugAntIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
-//import { Address } from "~~/components/scaffold-eth";
-
 const Home: NextPage = () => {
-  //const { address: connectedAddress } = useAccount();
-
   return (
     <>
       <div className="flex items-center flex-col flex-grow pt-10">
         <div className="px-5">
           <h1 className="text-center">
             <span className="block text-5xl font-bold">PropertyBlocks</span>
-            <span className="block text-2xl mb-2">Welcome to</span>
+            <span className="block text-yellow-500 font-semibold text-2xl mb-2">
+              Fractionalized Real Estate Investment on BSC and LISK Blockchain
+            </span>
           </h1>
 
-          <div
-            className="flex flex-col p-6  
-                     justify-center  
-                    items-center"
-          >
+          <div className="flex flex-col p-6 justify-center       items-center">
             <div className="w-full relative bg-slate-300 mb-5">
-              <img
-                className="w-full h-3/5 object-cover"
-                alt="banner"
-                src="https://media.licdn.com/dms/image/D4D12AQE7QmFts4WD6g/article-cover_image-shrink_720_1280/0/1707776096849?e=2147483647&v=beta&t=Lb7ZSWRAhfSridnUZ82qf1rDV2K3bUhYjkfX1qn0uAw"
-              />
+              <Image className="w-full h-2/5 object-fit" alt="banner" src="/banner.jpg" width={1000} height={400} />
             </div>
 
             {/**
@@ -95,11 +84,7 @@ const Home: NextPage = () => {
 
         <div className="flex-grow bg-base-300 w-full mt-16 px-8 py-12">
           <div className="flex justify-center items-center gap-12 flex-col sm:flex-row mx-20 px-10">
-            <img
-              className="w-full h-3/5 object-cover"
-              alt="benefit"
-              src="https://newdoorrealtors.in/admin/uploadimg/blog_1702026044.png"
-            />
+            <Image className="w-full h-3/5 object-cover" alt="benefit" src="/benefit.png" width={1000} height={250} />
           </div>
         </div>
 
@@ -111,8 +96,12 @@ const Home: NextPage = () => {
               priority={true}
               fill={true}
               alt="landing pic"
-              src="https://lenderkit.com/wp-content/uploads/2022/11/fractional-ownership-1100x563.png"
+              src="/thumbnail.jpg"
             />
+          </div>
+
+          <div className="w-full relative bg-slate-300 mb-5">
+            <Image className="w-full h-2/5 object-fit" alt="banner" src="/ownership.png" width={1000} height={400} />
           </div>
 
           <div className="flex justify-center items-center space-x-2">
