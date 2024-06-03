@@ -1,9 +1,57 @@
-# 🏗 Scaffold-ETH 2
+# 🏗 PropertyBlocks : A Real World Asset (RWA) Project on BlockChain for fractionalized Real Estate Investment
 
 <h4 align="center">
-  <a href="https://docs.scaffoldeth.io">Documentation</a> |
-  <a href="https://scaffoldeth.io">Website</a>
+  <a href="https://youtu.be/NNKcoUi3734">YouTube Code Walkthrough</a> |
+  <a href="https://scaffoldeth.iopropertyblocks.vercel.app/">Website</a>
 </h4>
+
+## Inspiration
+
+The inspiration behind PropertyBlocks stemmed from the desire to democratize real estate investment. Traditional real estate investments often require significant capital, making it inaccessible for many. By leveraging blockchain technology, we aimed to lower the barrier to entry, allowing anyone to invest in real estate properties with smaller amounts of capital. The concept of fractional ownership inspired us to create a platform where individuals can buy, sell, and trade fractions of real estate assets seamlessly, thus promoting financial inclusion and decentralization.
+
+## What it does
+
+PropertyBlocks is a decentralized platform that enables the fractional ownership of real estate assets. It allows users to register properties, tokenize them into fractions, and sell or rent these fractions on the blockchain. Investors can purchase fractions of a property, thereby gaining ownership and potential rental income based on their investment. The platform also features a marketplace where users can buy, sell, and trade property fractions. Additionally, PropertyBlocks includes a mechanism for renting properties, with rental income distributed proportionally to fraction owners.
+
+## How we built it
+
+PropertyBlocks was built using Solidity for smart contract development on the Lisk blockchain. We utilized Hardhat and Chai for testing and deployment of our contracts. The frontend was developed using Next.js, with ethers.js facilitating interaction with the blockchain. For tokenization, we implemented the ERC20 standard to represent property fractions and for security. We integrated IPFS for decentralized storage of property-related metadata, ensuring immutability and transparency. The platform also includes robust security measures to protect users' investments and ensure the integrity of transactions.
+
+## Challenges we ran into
+
+During development, we faced several challenges and lots of reserach was conducted:
+
+1. Smart Contract Security: Ensuring the security of our smart contracts was paramount. We had to implement and rigorously test measures to prevent common vulnerabilities such as reentrancy attacks and overflow/underflow issues.
+2. Scalability: Managing and optimizing gas costs for transactions, especially for complex operations like fractional ownership transfers and rental income distribution, was challenging.
+3. User Experience: Creating an intuitive and seamless user experience for interacting with the blockchain and managing property fractions required careful design and extensive testing.
+4. Regulatory Compliance: Navigating the regulatory landscape for tokenized real estate was complex, requiring us to consider legal implications and compliance requirements in different jurisdictions.
+
+## Accomplishments that we're proud of
+
+We are proud of several key accomplishments:
+
+1 Successful Deployment: Deploying a fully functional platform on the Ethereum blockchain that enables fractional ownership and rental of real estate properties.
+2. User-Friendly Interface: Developing a user-friendly interface that simplifies complex blockchain interactions, making it accessible even to users with minimal blockchain knowledge.
+3 Robust Security: Implementing robust security measures and conducting thorough testing to ensure the safety of users' investments.
+4. Community Engagement: Building an engaged community of early adopters and investors who are excited about the potential of decentralized real estate investment.
+
+## What we learned
+
+I didn't know that the world of real estate is this vast and lucrative. My little research during this project opened my eyes to the huge potentials in this industry. i know trhat Blockchain will definitelt change the way the real estate is transacted digitally.
+
+## What's next for PropertyBlock
+
+If i have more time. i will continue to work on the project.
+
+1. Introduce a lending pools.
+2. Allow property owners to use their property as collateral to lend from the pool.
+3. Fractionalized renting too.
+
+Deployment on List Sepolia
+<https://sepolia-blockscout.lisk.com/address/0x09c67f656805d3B4CB544ce11683928e62a9c4d7>
+
+Deployment on Bsc Testnet
+<https://testnet.bscscan.com/address/0xa199AB87E3787C67f5286d78f527B1426f022eeD>
 
 🧪 An open-source, up-to-date toolkit for building decentralized applications (dapps) on the Ethereum blockchain. It's designed to make it easier for developers to create and deploy smart contracts and build user interfaces that interact with those contracts.
 
