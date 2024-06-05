@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import RealEstateFractionalize from "../../../hardhat/artifacts/contracts/RealEstateFractionalize.sol/RealEstateFractionalize.json";
 import { liskAddress } from "../../config";
+// import axios from "axios";
 // import { bnbAddress } from "../../config";
 import "dotenv/config";
 import { ethers } from "ethers";
