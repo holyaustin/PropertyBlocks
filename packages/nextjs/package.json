@@ -22,8 +22,11 @@
     "blo": "~1.0.1",
     "burner-connector": "~0.0.6",
     "daisyui": "4.5.0",
+    "dotenv": "^16.4.5",
+    "ethers": "^5.7.2",
     "next": "~14.0.4",
     "next-themes": "~0.2.1",
+    "nft.storage": "^6.4.1",
     "nprogress": "~0.2.0",
     "qrcode.react": "~3.1.0",
     "react": "~18.2.0",
@@ -34,6 +37,7 @@
     "usehooks-ts": "2.13.0",
     "viem": "2.8.16",
     "wagmi": "2.5.12",
+    "web3modal": "^1.9.12",
     "zustand": "~4.1.2"
   },
   "devDependencies": {

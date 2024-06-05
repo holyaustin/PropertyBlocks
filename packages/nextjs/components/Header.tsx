@@ -21,22 +21,27 @@ export const menuLinks: HeaderMenuLink[] = [
   },
   {
     label: "Register",
-    href: "/debug",
+    href: "/register",
+    icon: <BugAntIcon className="h-4 w-4" />,
+  },
+  {
+    label: "Explore",
+    href: "/explore",
     icon: <BugAntIcon className="h-4 w-4" />,
   },
   {
     label: "Buy",
-    href: "/debug",
+    href: "/buy",
     icon: <BugAntIcon className="h-4 w-4" />,
   },
   {
     label: "Sell",
-    href: "/debug",
+    href: "/sell",
     icon: <BugAntIcon className="h-4 w-4" />,
   },
   {
     label: "Rent",
-    href: "/debug",
+    href: "/rent",
     icon: <BugAntIcon className="h-4 w-4" />,
   },
 ];

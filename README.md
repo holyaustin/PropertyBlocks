@@ -5,6 +5,10 @@
   <a href="https://scaffoldeth.iopropertyblocks.vercel.app/">Website</a>
 </h4>
 
+const baseUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL
+  ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+  : `http://localhost:${process.env.PORT || 3000}`;
+
 ## Inspiration
 
 The inspiration behind PropertyBlocks stemmed from the desire to democratize real estate investment. Traditional real estate investments often require significant capital, making it inaccessible for many. By leveraging blockchain technology, we aimed to lower the barrier to entry, allowing anyone to invest in real estate properties with smaller amounts of capital. The concept of fractional ownership inspired us to create a platform where individuals can buy, sell, and trade fractions of real estate assets seamlessly, thus promoting financial inclusion and decentralization.
