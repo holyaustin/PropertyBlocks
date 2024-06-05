@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import RealEstateFractionalize from "../../../hardhat/artifacts/contracts/RealEstateFractionalize.sol/RealEstateFractionalize.json";
+import RealEstateFractionalize from "../../artifacts/contracts/RealEstateFractionalize.sol/RealEstateFractionalize.json";
 import { liskAddress } from "../../config";
 // import { bnbAddress } from "../../config";
 import "dotenv/config";
