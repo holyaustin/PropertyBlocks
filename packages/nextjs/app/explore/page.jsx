@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+// import Image from "next/image";
+// import Link from "next/link";
 import { useRouter } from "next/navigation";
 import RealEstateFractionalize from "../../artifacts/contracts/RealEstateFractionalize.sol/RealEstateFractionalize.json";
 import { liskAddress } from "../../config";
@@ -134,24 +136,39 @@ export default function Explore() {
         <div className="px-4" style={{ maxWidth: "1600px" }}>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pt-4">
             {nfts.map((nft, i) => (
-              <div key={i} className="shadow rounded-xl overflow-hidden border-2 border-white-500">
+              <div key={i} className="flex flex-col shadow rounded-xl overflow-hidden border-2 border-white-500">
+                {/**
+                  <Image
+                    alt="RealEstateFractionalize"
+                    src={`${nft.image}#toolbar=0`}
+                    width={300}
+                    height={300}
+                    className=""object-fill shadow-2xl bg-red rounded-xl  
+                    p-4 m-4   shadow-rose-400  
+                     hover:rotate-45 duration-150  
+                     ease-in-out "
+                  />  */}
+
                 <img
-                  title="RealEstateFractionalize"
+                  title="fileNFT"
                   frameBorder="0"
                   scrolling="no"
-                  height="200px"
-                  width="100%"
+                  height={300}
+                  width={300}
                   // objectFit="cover"
                   src={`${nft.image}#toolbar=0`}
-                  className="py-3 object-cover h-500"
+                  className="object-fill py-3 object-cover h-500"
                   w={nft.key}
                 />
+
                 <div className="p-1">
-                  <p style={{ height: "34px" }} className="text-xl text-purple-700 font-semibold">
+                  <p style={{ height: "34px" }} className="text-lg text-purple-700 font-semibold">
                     Name: {nft.name}
                   </p>
-                  <p className="text-xl font-bold text-black">ID : {nft.tokenId}</p>
-                  <p className="text-xl font-bold text-black">PIN : {nft.pin}</p>
+                  <p className="text-base font-bold text-black">Description : {nft.description}</p>
+                  <p className="text-base font-bold text-black">Property Address : {nft.paddress}</p>
+                  <p className="text-base font-bold text-black">Property type : {nft.ptype}</p>
+                  <p className="text-base font-bold text-black">Amount : {nft.price} ETH</p>
                 </div>
                 {/** onClick={() => share(nft)} */}
                 <div className="p-2 bg-black">
@@ -174,71 +191,6 @@ export default function Explore() {
 }
 
 /**
-const Register = () => {
-  const navigate = useRouter();
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [uploadedFile, setUploadedFile] = useState();
-  const [uploadedFile2, setUploadedFile2] = useState();
-  const [uploadedFile3, setUploadedFile3] = useState();
-  const [imageView, setImageView] = useState();
-  const [metaDataURL, setMetaDataURl] = useState();
-  const [txURL, setTxURL] = useState();
-  const [txStatus, setTxStatus] = useState();
-  const [formInput, updateFormInput] = useState({
-    name: "",
-    description: "",
-    ptype: "",
-    paddress: "",
-    pin: "",
-    price: "",
-    totalfraction: "",
-  });
-
-  if (allowedNetworks.filter(allowedNetwork => allowedNetwork.id) !== 4202) {
-    // const fileShareAddress = liskAddress;
-  } else if (allowedNetworks.filter(allowedNetwork => allowedNetwork.id) !== 97) {
-    //fileShareAddress = bnbAddress;
-  } else {
-    alert("Choose Lisk Sepolia Testnet or BSc Testnet from your wallet and try again.");
-  }
-  const handleFileUpload = event => {
-    console.log("file1 for upload selected...");
-    setUploadedFile(event.target.files[0]);
-    setTxStatus("");
-    setImageView("");
-    setMetaDataURl("");
-    setTxURL("");
-  };
-  const handleFileUpload2 = event => {
-    console.log("file2 for upload selected...");
-    setUploadedFile2(event.target.files[0]);
-  };
-  const handleFileUpload3 = event => {
-    console.log("file3 for upload selected...");
-    setUploadedFile3(event.target.files[0]);
-  };
-
-  const uploadNFTContent = async (inputFile, inputFile2, inputFile3) => {
-    const { name, description, ptype, paddress, pin, totalfraction, price } = formInput;
-
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    let accounts = await provider.send("eth_requestAccounts", []);
-    let account = accounts[0];
-    provider.on("accountsChanged", function (accounts) {
-      account = accounts[0];
-      console.log(address); // Print new address
-      console.log(account); // Print new address
-    });
-    const signer = provider.getSigner();
-    const address = await signer.getAddress();
-    console.log("users account is: ", address);
-
-    if (!name || !description || !ptype || !paddress || !pin || !totalfraction || !price || !inputFile) return;
-    const nftStorage = new NFTStorage({ token: APIKEY });
-    try {
-      console.log("Trying to upload file to ipfs");
-      setTxStatus("Uploading Item to IPFS & Filecoin via NFT.storage.");
-      console.log("close to metadata generation");
       const metaData = await nftStorage.store({
         name: name,
         description: description,
@@ -253,98 +205,14 @@ const Register = () => {
           image3: inputFile3,
         },
       });
-      setMetaDataURl(metaData.url);
-      setMetaPrice(price);
-      setMetaFraction(totalfraction);
-      console.log("metadata is: ", { metaData });
-      return metaData;
-    } catch (error) {
-      setErrorMessage("Could store file to NFT.Storage - Aborted file upload.");
-      console.log("Error Uploading Content", error);
-    }
-  };
 
-  const sendTxToBlockchain = async metadata => {
-    const { totalfraction, price } = formInput;
-    try {
-      setTxStatus("Adding transaction to Blockchain.");
-      const web3Modal = new Web3Modal();
-      const connection = await web3Modal.connect();
-      const provider = new ethers.providers.Web3Provider(connection);
-
-      const connectedContract = new ethers.Contract(
-        fileShareAddress,
-        RealEstateFractionalize.abi,
-        provider.getSigner(),
-      );
-      console.log("Connected to contract", fileShareAddress);
-      console.log("IPFS blockchain uri is ", metadata.url);
-
-      //const price = ethers.utils.parseUnits(formInput.price, "ether");
-      const TotalFraction = totalfraction.toString();
-      const Price = price.toString();
-      let listingPrice = await connectedContract.getListingPrice();
-      listingPrice = listingPrice.toString();
-      console.log("listingPrice", listingPrice);
-      console.log("Price", Price);
-      const chainTx = await connectedContract.registerProperty(Price, TotalFraction, metadata.url, {
-        value: listingPrice,
-      });
-      console.log("Passed ChainTTX", chainTx);
-      console.log("Property successfully created and added to Blockchain");
-      await chainTx.wait();
-      return chainTx;
-    } catch (error) {
-      setErrorMessage("Failed to send tx to Blockchain.");
-      console.log(error);
-    }
-  };
-
-  const previewNFT = (metaData, chainTx) => {
-    console.log("getIPFSGatewayURL2 two is ...");
-    const imgViewString = getIPFSGatewayURL(metaData.data.image.pathname);
-    //const img2ViewString = getIPFSGatewayURL(metaData.data.image2.pathname);
-    //const img3ViewString = getIPFSGatewayURL(metaData.data.image3.pathname);
-    console.log("image ipfs path is", imgViewString);
-    //console.log("image2 ipfs path is", img2ViewString);
-    //console.log("image3 ipfs path is", img3ViewString);
-    setImageView(imgViewString);
-    setMetaDataURl(getIPFSGatewayURL(metaData.url));
-    setTxURL(`https://sepolia-blockscout.lisk.com/tx/${chainTx.hash}`);
-    setTxStatus("File addition was successfully!");
-    console.log("File preview completed");
-  };
-
-  const mintNFTFile = async (e, uploadedFile, uploadedFile2, uploadedFile3) => {
-    e.preventDefault();
-    // 1. upload File content via NFT.storage
-    const metaData = await uploadNFTContent(uploadedFile, uploadedFile2, uploadedFile3);
-
-    // 2. Mint a NFT token on Blockchain
-    const chainTx = await sendTxToBlockchain(metaData);
-
-    // 3. preview the minted nft
-    previewNFT(metaData, chainTx);
-
-    //4. navigate("/explore");
-    navigate.push("/buy");
-  };
-
+ 
   async function CarDetails() {
    Link to Library Categories 
     // router.push("/catebooks");
     navigate("/carDetails");
   }
  
-
-  const getIPFSGatewayURL = ipfsURL => {
-    const urlArray = ipfsURL.split("/");
-    console.log("urlArray = ", urlArray);
-    const ipfsGateWayURL = `https://${urlArray[2]}.ipfs.nftstorage.link/${urlArray[3]}`;
-    console.log("ipfsGateWayURL = ", ipfsGateWayURL);
-    return ipfsGateWayURL;
-  };
-
   return (
     <div>
       <div className="bg-blue-100 text-4xl text-center text-black font-bold pt-10">
