@@ -7,13 +7,9 @@ import { useRouter } from "next/navigation";
 import RealEstateFractionalize from "../../artifacts/contracts/RealEstateFractionalize.sol/RealEstateFractionalize.json";
 import { liskAddress } from "../../config";
 import axios from "axios";
-// import { bnbAddress } from "../../config";
 import "dotenv/config";
 import { ethers } from "ethers";
-//import { NFTStorage } from "nft.storage";
 import Web3Modal from "web3modal";
-
-//import { getTargetNetworks } from "~~/utils/scaffold-eth";
 
 const fileShareAddress = liskAddress;
 
@@ -26,7 +22,6 @@ export default function Explore() {
   }, []);
 
   // const rpcUrl = "https://rpc.sepolia-api.lisk.com";
-  // const rpcUrl = "http://localhost:8545";
 
   async function loadfileNFT() {
     const web3Modal = new Web3Modal({
@@ -89,37 +84,11 @@ export default function Explore() {
     console.log("item id clicked is", nft.tokenId);
     const id = nft.tokenId;
 
-    router.push({
-      pathname: "/carDetails",
-      query: { id },
-    });
-    console.log("Prop result without {} is ", { id });
+    router.push(`/details?id=${id}`);
 
-    /**
-      const web3Modal = new Web3Modal();
-      const connection = await web3Modal.connect();
-      const provider = new ethers.providers.Web3Provider(connection);
-      const signer = provider.getSigner();
-      const contract = new ethers.Contract(fileShareAddress, RealEstateFractionalize.abi, signer);
-  
-      const transaction = await contract.createFileShare(nft.tokenId);
-      await transaction.wait();
-      console.log("RealEstateFractionalize Share transaction completed ");
-      const token = nft.tokenId;
-      console.log("token id is ", token);
-      loadfileNFT();
-       */
-    //navigate("/view", { state: token });
+    console.log("Prop result without {} is ", { id });
   }
-  /*
-  async function CarDetails() {
-    router.push({
-      pathname: "/carDetails",
-      query: { id },
-    });
-    console.log("Prop result is ", prop.id);
-  }
-  */
+
   if (loadingState === "loaded" && !nfts.length) {
     return (
       <div sx={styles.section}>
@@ -148,18 +117,17 @@ export default function Explore() {
                      hover:rotate-45 duration-150  
                      ease-in-out "
                   />  */}
-
-                <img
-                  title="fileNFT"
-                  frameBorder="0"
-                  scrolling="no"
-                  height={300}
-                  width={300}
-                  // objectFit="cover"
-                  src={`${nft.image}#toolbar=0`}
-                  className="object-fill py-3 object-cover h-500"
-                  w={nft.key}
-                />
+              <img
+                title="fileNFT"
+                frameBorder="0"
+                scrolling="no"
+                height="200px"
+                width="100%"
+                // objectFit="cover"
+                src={`${nft.image}#toolbar=0`}
+                className="py-3 object-cover h-500"
+                w={nft.key}
+              />
 
                 <div className="p-1">
                   <p style={{ height: "34px" }} className="text-lg text-purple-700 font-semibold">
@@ -213,52 +181,6 @@ export default function Explore() {
     navigate("/carDetails");
   }
  
-  return (
-    <div>
-      <div className="bg-blue-100 text-4xl text-center text-black font-bold pt-10">
-        <h1> Register a Property</h1>
-      </div>
-      <div className="flex justify-center bg-blue-100">
-        <div className="w-1/2 flex flex-col pb-12 ">
-          <input
-            placeholder="Enter Property Name e.g. two-storey building with 6 flats"
-            className="mt-5 border rounded p-4 text-xl"
-            onChange={e => updateFormInput({ ...formInput, name: e.target.value })}
-          />
-          <textarea
-            placeholder="Description of Property"
-            className="mt-5 border rounded p-4 text-xl"
-            onChange={e => updateFormInput({ ...formInput, description: e.target.value })}
-            rows={2}
-          />
-          <input
-            placeholder="Property Amount in USD e.g. $25,000"
-            className="mt-5 border rounded p-4 text-xl"
-            onChange={e => updateFormInput({ ...formInput, price: e.target.value })}
-          />
-          <input
-            placeholder="Amount of fractions to divide property e.g. 1,000, 20,000 etc. "
-            className="mt-5 border rounded p-4 text-xl"
-            onChange={e => updateFormInput({ ...formInput, totalfraction: e.target.value })}
-          />
-          <input
-            placeholder="Property Type e.g. building, Land etc. "
-            className="mt-5 border rounded p-4 text-xl"
-            onChange={e => updateFormInput({ ...formInput, ptype: e.target.value })}
-          />
-          <input
-            placeholder="Property Address e.g. 13 endeavour close, Kingston, JMC, Ikeja, Lagos etc. "
-            className="mt-5 border rounded p-4 text-xl"
-            onChange={e => updateFormInput({ ...formInput, paddress: e.target.value })}
-          />
-          <input
-            placeholder="Property Identification Number e.g.1C4GJWAG0DL544058 "
-            className="mt-5 border rounded p-4 text-xl"
-            onChange={e => updateFormInput({ ...formInput, pin: e.target.value })}
-          />
-
-          <br />
-
           <div className="text-black text-xl">
             <form>
               <h3>Select picture 1 of property</h3>
