@@ -1,13 +1,9 @@
-# 🏗 PropertyBlocks : A Real World Asset (RWA) Project on BlockChain for fractionalized Real Estate Investment
+# 🏗 PropertyBlocks : A Real World Asset (RWA) Project on BlockChain for fractionalized Real Estate Investment and lending
 
 <h4 align="center">
   <a href="https://youtu.be/NNKcoUi3734">YouTube Code Walkthrough</a> |
-  <a href="https://scaffoldeth.iopropertyblocks.vercel.app/">Website</a>
+  <a href="https://propertyblocks.vercel.app/">Website</a>
 </h4>
-
-const baseUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL
-  ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-  : `http://localhost:${process.env.PORT || 3000}`;
 
 ## Inspiration
 
@@ -34,7 +30,7 @@ During development, we faced several challenges and lots of reserach was conduct
 
 We are proud of several key accomplishments:
 
-1 Successful Deployment: Deploying a fully functional platform on the Ethereum blockchain that enables fractional ownership and rental of real estate properties.
+1 Successful Deployment: Deploying a fully functional platform on the Testnet blockchain that enables fractional ownership and rental of real estate properties.
 2. User-Friendly Interface: Developing a user-friendly interface that simplifies complex blockchain interactions, making it accessible even to users with minimal blockchain knowledge.
 3 Robust Security: Implementing robust security measures and conducting thorough testing to ensure the safety of users' investments.
 4. Community Engagement: Building an engaged community of early adopters and investors who are excited about the potential of decentralized real estate investment.
@@ -51,31 +47,12 @@ If i have more time. i will continue to work on the project.
 2. Allow property owners to use their property as collateral to lend from the pool.
 3. Fractionalized renting too.
 
-Deployment on List Sepolia
-<https://sepolia-blockscout.lisk.com/address/0x09c67f656805d3B4CB544ce11683928e62a9c4d7>
+Deployment on Arbitrium
 
-Deployment on Bsc Testnet
-<https://testnet.bscscan.com/address/0xa199AB87E3787C67f5286d78f527B1426f022eeD>
 
 🧪 An open-source, up-to-date toolkit for building decentralized applications (dapps) on the Ethereum blockchain. It's designed to make it easier for developers to create and deploy smart contracts and build user interfaces that interact with those contracts.
 
 ⚙️ Built using NextJS, RainbowKit, Hardhat, Wagmi, Viem, and Typescript.
-
-- ✅ **Contract Hot Reload**: Your frontend auto-adapts to your smart contract as you edit it.
-- 🪝 **[Custom hooks](https://docs.scaffoldeth.io/hooks/)**: Collection of React hooks wrapper around [wagmi](https://wagmi.sh/) to simplify interactions with smart contracts with typescript autocompletion.
-- 🧱 [**Components**](https://docs.scaffoldeth.io/components/): Collection of common web3 components to quickly build your frontend.
-- 🔥 **Burner Wallet & Local Faucet**: Quickly test your application with a burner wallet and local faucet.
-- 🔐 **Integration with Wallet Providers**: Connect to different wallet providers and interact with the Ethereum network.
-
-![Debug Contracts tab](https://github.com/scaffold-eth/scaffold-eth-2/assets/55535804/b237af0c-5027-4849-a5c1-2e31495cccb1)
-
-## Requirements
-
-Before you begin, you need to install the following tools:
-
-- [Node (>= v18.17)](https://nodejs.org/en/download/)
-- Yarn ([v1](https://classic.yarnpkg.com/en/docs/install/) or [v2+](https://yarnpkg.com/getting-started/install))
-- [Git](https://git-scm.com/downloads)
 
 ## Quickstart
 

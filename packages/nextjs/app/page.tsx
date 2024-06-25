@@ -13,7 +13,7 @@ const Home: NextPage = () => {
           <h1 className="text-center">
             <span className="block text-5xl font-bold">PropertyBlocks</span>
             <span className="block text-yellow-500 font-semibold text-2xl mb-2">
-              Fractionalized Real Estate Investment on BSC and LISK Blockchain
+              Fractionalized Real Estate Investment on Blockchain
             </span>
           </h1>
 
