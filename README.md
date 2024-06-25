@@ -15,7 +15,7 @@ PropertyBlocks is a decentralized platform that enables the fractional ownership
 
 ## How we built it
 
-PropertyBlocks was built using Solidity for smart contract development on the Lisk blockchain. We utilized Hardhat and Chai for testing and deployment of our contracts. The frontend was developed using Next.js, with ethers.js facilitating interaction with the blockchain. For tokenization, we implemented the ERC20 standard to represent property fractions and for security. We integrated IPFS for decentralized storage of property-related metadata, ensuring immutability and transparency. The platform also includes robust security measures to protect users' investments and ensure the integrity of transactions.
+PropertyBlocks was built using Solidity for smart contract development on the blockchain. We utilized Hardhat and Chai for testing and deployment of our contracts. The frontend was developed using Next.js, with ethers.js facilitating interaction with the blockchain. For tokenization, we implemented the ERC20 standard to represent property fractions and for security. We integrated IPFS for decentralized storage of property-related metadata, ensuring immutability and transparency. The platform also includes robust security measures to protect users' investments and ensure the integrity of transactions.
 
 ## Challenges we ran into
 
@@ -37,7 +37,7 @@ We are proud of several key accomplishments:
 
 ## What we learned
 
-I didn't know that the world of real estate is this vast and lucrative. My little research during this project opened my eyes to the huge potentials in this industry. i know trhat Blockchain will definitelt change the way the real estate is transacted digitally.
+I didn't know that the world of real estate is this vast and lucrative. My little research during this project opened my eyes to the huge potentials in this industry. i know that Blockchain will definitely change the way the real estate is transacted digitally.
 
 ## What's next for PropertyBlock
 
@@ -95,16 +95,66 @@ Run smart contract test with `yarn hardhat:test`
 - Edit your frontend homepage at `packages/nextjs/app/page.tsx`. For guidance on [routing](https://nextjs.org/docs/app/building-your-application/routing/defining-routes) and configuring [pages/layouts](https://nextjs.org/docs/app/building-your-application/routing/pages-and-layouts) checkout the Next.js documentation.
 - Edit your deployment scripts in `packages/hardhat/deploy`
 
-## Documentation
+## Real estate, particularly property real estate, leverages ReFi (Regenerative Finance) principles to promote sustainability, equity, and regenerative practices within the industry. Here's how these principles are applied:
 
-Visit our [docs](https://docs.scaffoldeth.io) to learn how to start building with Scaffold-ETH 2.
+1. Sustainable Development
+Principles:
 
-To know more about its features, check out our [website](https://scaffoldeth.io).
+Environmental Impact: Minimizing the ecological footprint of real estate projects through energy-efficient designs, renewable energy integration, and sustainable materials.
+Resource Management: Implementing practices such as water conservation, waste reduction, and sustainable landscaping.
+Applications:
 
-## Contributing to Scaffold-ETH 2
+Green building certifications (e.g., LEED, BREEAM).
+Incorporation of renewable energy sources (e.g., solar panels, geothermal systems).
+Use of recycled and low-impact materials in construction.
+2. Community Engagement and Social Equity
+Principles:
 
-We welcome contributions to Scaffold-ETH 2!
+Inclusivity: Ensuring that development projects benefit all community members, including marginalized groups.
+Local Economic Development: Supporting local economies by hiring local contractors and sourcing materials locally.
+Applications:
 
-Please see [CONTRIBUTING.MD](https://github.com/scaffold-eth/scaffold-eth-2/blob/main/CONTRIBUTING.md) for more information and guidelines for contributing to Scaffold-ETH 2.
+Mixed-use developments that include affordable housing options.
+Community land trusts that ensure long-term affordability and prevent displacement.
+Public-private partnerships that involve community stakeholders in the planning process.
+3. Regenerative Land Use
+Principles:
 
-Simple_Tap_Bot
+Biodiversity: Enhancing natural habitats and promoting biodiversity in and around real estate projects.
+Regenerative Agriculture: Utilizing land for agricultural purposes in a way that regenerates soil health and increases biodiversity.
+Applications:
+
+Development of urban green spaces, parks, and community gardens.
+Incorporation of green roofs and living walls to promote urban biodiversity.
+Use of permaculture principles in landscape design.
+4. Financial Innovations and Mechanisms
+Principles:
+
+Impact Investing: Channeling investments into projects that generate positive social and environmental outcomes.
+Circular Economy: Creating economic systems that emphasize reuse, recycling, and the longevity of materials.
+Applications:
+
+Green bonds and sustainability-linked loans to fund eco-friendly real estate projects.
+Real estate investment trusts (REITs) focused on sustainable properties.
+Implementation of circular construction practices to minimize waste and resource use.
+5. Technological Integration
+Principles:
+
+Smart Cities: Leveraging technology to create more efficient, sustainable, and livable urban environments.
+Data-Driven Decisions: Using data to optimize building performance and enhance sustainability.
+Applications:
+
+Implementation of smart building technologies (e.g., IoT sensors for energy management).
+Development of digital platforms for community engagement and resource sharing.
+Use of big data and analytics to drive sustainable urban planning.
+6. Long-Term Resilience and Adaptation
+Principles:
+
+Climate Resilience: Designing buildings and infrastructure to withstand and adapt to climate change impacts.
+Adaptive Reuse: Repurposing existing structures to reduce the need for new construction and preserve cultural heritage.
+Applications:
+
+Incorporation of climate-resilient features (e.g., flood defenses, heat-resistant materials).
+Adaptive reuse of old buildings for new purposes (e.g., converting warehouses into residential lofts).
+Creating flexible spaces that can be easily adapted for future needs.
+By embedding ReFi principles, the real estate industry can shift towards a more sustainable, equitable, and regenerative model, addressing environmental challenges and fostering community well-being.
