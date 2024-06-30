@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "hardhat/console.sol";
@@ -77,7 +77,6 @@ contract RealEstateFractionalize is ERC20 {
         nextPropertyId++;
     }
 
-
     /**
      * @dev Allows a user to buy fractions of a property.
      * Transfers 0.5% of the cost to the contract and the rest to the property owner.
@@ -114,7 +113,6 @@ contract RealEstateFractionalize is ERC20 {
         emit FractionBought(propertyId, msg.sender, fractionAmount);
 
     }
-
 
     /**
      * @dev Allows a user to sell fractions of a property.
@@ -186,7 +184,6 @@ contract RealEstateFractionalize is ERC20 {
         console.log("ETH Balance END ", address(this).balance);
     }
 
-
     /**
      * @dev Sets the listing price for registering a property.
      * @param price The new listing price.
@@ -226,6 +223,17 @@ contract RealEstateFractionalize is ERC20 {
         property.forSale = true;
         property.salePrice = salePrice;
     }
+
+    /**
+     * @dev Retrieves a property by its ID.
+     * @param propertyId The ID of the property to retrieve.
+     * @return The property with the given ID.
+     */
+    function getPropertyById(uint256 propertyId) external view returns (Property memory) {
+        require(propertyId < nextPropertyId, "Property does not exist");
+        return properties[propertyId];
+    }
+
 
     /**
      * @dev Fetches all properties that are currently for sale.
