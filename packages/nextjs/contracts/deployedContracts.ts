@@ -5,7 +5,7 @@
 import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 
 const deployedContracts = {
-  97: {
+  59141: {
     RealEstateFractionalize: {
       address: "0x3672F4eb94d6f674D11b9D24321eaD0Bb0B490Ab",
       abi: [
@@ -2542,7 +2542,7 @@ const deployedContracts = {
       inheritedFunctions: {},
     },
   },
-  59141: {
+  1: {
     RealEstateFractionalize: {
       address: "0xc310585ad34ddef51009a9c92f38e8ba8a5d2375",
       abi: [

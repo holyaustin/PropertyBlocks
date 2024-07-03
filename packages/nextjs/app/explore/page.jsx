@@ -40,10 +40,13 @@ export default function Explore() {
     /*
      *  map over items returned from smart contract and format
      *  them as well as fetch their token metadata
-     */
+     */ // getPropertyById
     const items = await Promise.all(
       data.map(async i => {
-        const tokenUri = await contract.properties(i.id);
+        console.log("Inside the item map ");
+        const propertyData = await contract.properties(i.id);
+        console.log("property Data is ", propertyData);
+        const tokenUri = await propertyData.propertyURI;
         console.log("token Uri is ", tokenUri);
         const httpUri = getIPFSGatewayURL(tokenUri);
         console.log("Http Uri is ", httpUri);
@@ -61,7 +64,7 @@ export default function Explore() {
           price: meta.data.properties.price,
           totalfraction: meta.data.properties.totalfraction,
           image2: getIPFSGatewayURL(meta.data.properties.image2),
-          image3: getIPFSGatewayURL(meta.data.properties.image3),
+          //image3: getIPFSGatewayURL(meta.data.properties.image3),
         };
         console.log("item returned is ", item);
 
@@ -72,8 +75,9 @@ export default function Explore() {
     setNfts(items);
     setLoadingState("loaded");
   }
+
   const getIPFSGatewayURL = ipfsURL => {
-    const urlArray = ipfsURL.toString().split("/");
+    const urlArray = ipfsURL.split("/");
     console.log("urlArray = ", urlArray);
     const ipfsGateWayURL = `https://${urlArray[2]}.ipfs.nftstorage.link/${urlArray[3]}`;
     console.log("ipfsGateWayURL = ", ipfsGateWayURL);
@@ -91,8 +95,8 @@ export default function Explore() {
 
   if (loadingState === "loaded" && !nfts.length) {
     return (
-      <div sx={styles.section}>
-        <h1 className="px-20 py-10 text-3xl text-white">Empty drive, no file yet</h1>
+      <div>
+        <h1 className="px-20 py-10 text-3xl text-white">Empty marketplace, no property listed yet</h1>
       </div>
     );
   }
@@ -117,17 +121,17 @@ export default function Explore() {
                      hover:rotate-45 duration-150  
                      ease-in-out "
                   />  */}
-              <img
-                title="fileNFT"
-                frameBorder="0"
-                scrolling="no"
-                height="200px"
-                width="100%"
-                // objectFit="cover"
-                src={`${nft.image}#toolbar=0`}
-                className="py-3 object-cover h-500"
-                w={nft.key}
-              />
+                <img
+                  title="fileNFT"
+                  frameBorder="0"
+                  scrolling="no"
+                  height="200px"
+                  width="100%"
+                  // objectFit="cover"
+                  src={`${nft.image}#toolbar=0`}
+                  className="py-3 object-cover h-500"
+                  w={nft.key}
+                />
 
                 <div className="p-1">
                   <p style={{ height: "34px" }} className="text-lg text-purple-700 font-semibold">
@@ -136,7 +140,7 @@ export default function Explore() {
                   <p className="text-base font-bold text-black">Description : {nft.description}</p>
                   <p className="text-base font-bold text-black">Property Address : {nft.paddress}</p>
                   <p className="text-base font-bold text-black">Property type : {nft.ptype}</p>
-                  <p className="text-base font-bold text-black">Amount : {nft.price} ETH</p>
+                  <p className="text-base font-bold text-black">Amount : {nft.price} USD</p>
                 </div>
                 {/** onClick={() => share(nft)} */}
                 <div className="p-2 bg-black">
@@ -157,114 +161,3 @@ export default function Explore() {
     </div>
   );
 }
-
-/**
-      const metaData = await nftStorage.store({
-        name: name,
-        description: description,
-        image: inputFile,
-        properties: {
-          paddress,
-          ptype,
-          pin,
-          price,
-          totalfraction,
-          image2: inputFile2,
-          image3: inputFile3,
-        },
-      });
-
- 
-  async function CarDetails() {
-   Link to Library Categories 
-    // router.push("/catebooks");
-    navigate("/carDetails");
-  }
- 
-          <div className="text-black text-xl">
-            <form>
-              <h3>Select picture 1 of property</h3>
-              <input type="file" onChange={handleFileUpload} className="text-black mb-2 border rounded  text-xl" />
-              <h3>Select picture 2 of property</h3>
-              <input type="file" onChange={handleFileUpload2} className="text-black mb-2 border rounded  text-xl" />
-              <h3>Select picture 3 of property</h3>
-              <input type="file" onChange={handleFileUpload3} className="text-black mb-2 border rounded  text-xl" />
-            </form>
-            {txStatus && <p>{txStatus}</p>}
-
-            {metaDataURL && (
-              <p className="text-blue">
-                <a href={metaDataURL} className="text-blue">
-                  Metadata on IPFS
-                </a>
-              </p>
-            )}
-
-            {txURL && (
-              <p>
-                <a href={txURL} className="text-blue">
-                  See the chain transaction
-                </a>
-              </p>
-            )}
-
-            {errorMessage}
-
-            {imageView && (
-              <img
-                className="mb-10"
-                title="File"
-                src={imageView}
-                alt="File preview"
-                frameBorder="0"
-                scrolling="auto"
-                height="50%"
-                width="100%"
-              />
-            )}
-          </div>
-
-          <button
-            type="button"
-            sx={{ backgroundColor: "primary" }}
-            onClick={e => mintNFTFile(e, uploadedFile, uploadedFile2, uploadedFile3)}
-            className="font-bold mt-20 bg-base-100 text-white text-2xl rounded p-4 shadow-lg"
-          >
-            Register Property
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
-export default Register;
-
-/** import { DebugContracts } from "./_components/DebugContracts";
-import type { NextPage } from "next";
-import { getMetadata } from "~~/utils/scaffold-eth/getMetadata";
-
-export const metadata = getMetadata({
-  title: "Register Property",
-  description: "Debug your deployed 🏗 Scaffold-ETH 2 contracts in an easy way",
-});
-
-const Debug: NextPage = () => {
-  return (
-    <>
-      <DebugContracts />
-      <div className="text-center mt-8 bg-secondary p-10">
-        <h1 className="text-4xl my-0">Debug Contracts</h1>
-        <p className="text-neutral">
-          You can debug & interact with your deployed contracts here.
-          <br /> Check{" "}
-          <code className="italic bg-base-300 text-base font-bold [word-spacing:-0.5rem] px-1">
-            packages / nextjs / app / debug / page.tsx
-          </code>{" "}
-        </p>
-      </div>
-    </>
-  );
-};
-
-export default Debug;
-*/

@@ -159,6 +159,8 @@ Adaptive reuse of old buildings for new purposes (e.g., converting warehouses in
 Creating flexible spaces that can be easily adapted for future needs.
 By embedding ReFi principles, the real estate industry can shift towards a more sustainable, equitable, and regenerative model, addressing environmental challenges and fostering community well-being.
 
+https://sepolia.lineascan.build/address/0x3672F4eb94d6f674D11b9D24321eaD0Bb0B490Ab
+
 0xD547726541FB37dB19fDB263f4855bA969034071
 
 0x3672F4eb94d6f674D11b9D24321eaD0Bb0B490Ab

@@ -38,12 +38,10 @@ const Register = () => {
     totalfraction: "",
   });
 
-  if (allowedNetworks.filter(allowedNetwork => allowedNetwork.id) !== 4202) {
+  if (allowedNetworks.filter(allowedNetwork => allowedNetwork.id) !== 59141) {
     // const fileShareAddress = liskAddress;
-  } else if (allowedNetworks.filter(allowedNetwork => allowedNetwork.id) !== 97) {
-    //fileShareAddress = bnbAddress;
   } else {
-    alert("Choose Lisk Sepolia Testnet or BSc Testnet from your wallet and try again.");
+    alert("Choose Linear Sepolia Testnet from your wallet and try again.");
   }
   const handleFileUpload = event => {
     console.log("file1 for upload selected...");
@@ -98,8 +96,8 @@ const Register = () => {
         },
       });
       setMetaDataURl(metaData.url);
-      setMetaPrice(price);
-      setMetaFraction(totalfraction);
+      //setMetaPrice(price);
+      //setMetaFraction(totalfraction);
       console.log("metadata is: ", { metaData });
       return metaData;
     } catch (error) {
@@ -171,15 +169,8 @@ const Register = () => {
     previewNFT(metaData, chainTx);
 
     //4. navigate("/explore");
-    navigate.push("/buy");
+    navigate.push("/explore");
   };
-  /*
-  async function CarDetails() {
-   Link to Library Categories 
-    // router.push("/catebooks");
-    navigate("/carDetails");
-  }
-  */
 
   const getIPFSGatewayURL = ipfsURL => {
     const urlArray = ipfsURL.split("/");
@@ -202,7 +193,7 @@ const Register = () => {
             onChange={e => updateFormInput({ ...formInput, name: e.target.value })}
           />
           <textarea
-            placeholder="Description of Property"
+            placeholder="Description of Property, state how it leverages ReFi (Regenerative Finance)"
             className="mt-5 border rounded p-4 text-xl"
             onChange={e => updateFormInput({ ...formInput, description: e.target.value })}
             rows={2}

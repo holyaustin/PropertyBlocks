@@ -14,6 +14,7 @@ export type ChainWithAttributes = chains.Chain & Partial<ChainAttributes>;
 // Mapping of chainId to RPC chain name an format followed by alchemy and infura
 export const RPC_CHAIN_NAMES: Record<number, string> = {
   [chains.mainnet.id]: "eth-mainnet",
+  [chains.lineaSepolia.id]: "Lin-sepolia",
   [chains.goerli.id]: "eth-goerli",
   [chains.sepolia.id]: "eth-sepolia",
   [chains.optimism.id]: "opt-mainnet",
@@ -33,11 +34,19 @@ export const RPC_CHAIN_NAMES: Record<number, string> = {
   [chains.baseSepolia.id]: "base-sepolia",
 };
 
+// RPC for chains not on alchemy
+export const getAlchemyHttpUrl = (chainId: number) => {
+  return RPC_CHAIN_NAMES[chainId] ? `https://linea-sepolia.blockpi.network/v1/rpc/public` : undefined;
+};
+
+// RPC for chains on alchemy
+/** 
 export const getAlchemyHttpUrl = (chainId: number) => {
   return RPC_CHAIN_NAMES[chainId]
     ? `https://${RPC_CHAIN_NAMES[chainId]}.g.alchemy.com/v2/${scaffoldConfig.alchemyApiKey}`
     : undefined;
 };
+*/
 
 export const NETWORKS_EXTRA_DATA: Record<string, ChainAttributes> = {
   [chains.hardhat.id]: {
@@ -47,6 +56,9 @@ export const NETWORKS_EXTRA_DATA: Record<string, ChainAttributes> = {
     color: "#ff8b9e",
   },
   [chains.sepolia.id]: {
+    color: ["#5f4bb6", "#87ff65"],
+  },
+  [chains.lineaSepolia.id]: {
     color: ["#5f4bb6", "#87ff65"],
   },
   [chains.gnosis.id]: {
