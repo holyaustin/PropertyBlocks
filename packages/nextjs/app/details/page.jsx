@@ -26,17 +26,12 @@ export default function ViewDetails() {
   }, []);
 
   const getIPFSGatewayURL = ipfsURL => {
-    const urlArray = ipfsURL.toString().split("/");
+    const urlArray = ipfsURL.split("/");
     console.log("urlArray = ", urlArray);
     const ipfsGateWayURL = `https://${urlArray[2]}.ipfs.nftstorage.link/${urlArray[3]}`;
     console.log("ipfsGateWayURL = ", ipfsGateWayURL);
     return ipfsGateWayURL;
   };
-  /**   const getId = props => {
-    console.log(props);
-    return props;
-  };
-*/
 
   async function Live() {
     router.push("/dashboardLive");
@@ -46,15 +41,12 @@ export default function ViewDetails() {
   }
   //const rpcUrl = "https://rpc.sepolia-api.lisk.com";
 
-  const id = searchParams.get("id");
-  const props = id;
-  console.log("Props result is without ", props);
+  const idx = searchParams.get("id");
+  console.log("Props result is without ", idx);
 
   async function loadDetails() {
     /* create a generic provider and query for unsold market items */
-    console.log("loading property for item", props);
-    const propid = props;
-    console.log("loading property for item", propid);
+    console.log("loading property for item", idx);
 
     const web3Modal = new Web3Modal({
       network: "mainnet",
@@ -65,13 +57,16 @@ export default function ViewDetails() {
     //const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
     const signer = provider.getSigner();
     const contract = new ethers.Contract(fileShareAddress, RealEstateFractionalize.abi, signer);
-    console.log("data loading ");
-    const data = await contract.fetchMyPropertyRegistered(); // work getting fetchOneNFT
+    console.log("data loading for idx ", idx);
+    const data = await contract.fetchOneProperty(idx); // work getting fetchOneNFT
     console.log("data fetched is ", data);
 
     const items = await Promise.all(
       data.map(async i => {
-        const tokenUri = await contract.properties(i.id);
+        console.log("Inside the item map ");
+        const propertyData = await contract.properties(i.id);
+        console.log("property Data is ", propertyData);
+        const tokenUri = await data.propertyURI;
         console.log("token Uri is ", tokenUri);
         const httpUri = getIPFSGatewayURL(tokenUri);
         console.log("Http Uri is ", httpUri);
@@ -82,6 +77,7 @@ export default function ViewDetails() {
           image: getIPFSGatewayURL(meta.data.image),
           name: meta.data.name,
           description: meta.data.description,
+          sharelink: getIPFSGatewayURL(meta.data.image),
           pin: meta.data.properties.pin,
           paddress: meta.data.properties.paddress,
           ptype: meta.data.properties.ptype,
@@ -90,7 +86,6 @@ export default function ViewDetails() {
           image2: getIPFSGatewayURL(meta.data.properties.image2),
           image3: getIPFSGatewayURL(meta.data.properties.image3),
         };
-
         console.log("item returned is ", item);
         return item;
       }),

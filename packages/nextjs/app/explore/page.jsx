@@ -21,8 +21,6 @@ export default function Explore() {
     loadfileNFT();
   }, []);
 
-  // const rpcUrl = "https://rpc.sepolia-api.lisk.com";
-
   async function loadfileNFT() {
     const web3Modal = new Web3Modal({
       network: "mainnet",

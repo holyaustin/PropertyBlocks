@@ -234,6 +234,31 @@ contract RealEstateFractionalize is ERC20 {
         return properties[propertyId];
     }
 
+    /* Returns only one items by token id   */
+    function fetchOneProperty(uint256 propertyId) public view returns (Property[] memory) {
+      require(propertyId < nextPropertyId, "Property does not exist");
+      uint totalItemCount = nextPropertyId;
+      uint itemCount = 0;
+      uint currentIndex = 0;
+
+      for (uint i = 0; i < totalItemCount; i++) {
+        if (properties[i].id == propertyId) {
+          itemCount += 1;
+        }
+      }
+
+      Property[] memory oneProperty = new Property[](itemCount);
+      for (uint i = 0; i < totalItemCount; i++) {
+        if (properties[i].id == propertyId) {
+          uint currentId = i;
+          Property storage currentItem = properties[currentId];
+          oneProperty[currentIndex] = currentItem;
+          currentIndex += 1;
+        }
+      }
+      return oneProperty;
+    }
+
 
     /**
      * @dev Fetches all properties that are currently for sale.
@@ -329,6 +354,11 @@ contract RealEstateFractionalize is ERC20 {
         return myProperties;
     }
 
+        // Function to fetch fractions sold of a property
+    function fetchURI(uint256 propertyId) external view returns ( string memory ) {
+        Property storage property = properties[propertyId];
+        return property.propertyURI;
+    }
 
         // Function to fetch fractions sold of a property
     function fetchFractionsSold(uint256 propertyId) external view returns (uint256) {
